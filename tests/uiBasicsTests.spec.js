@@ -18,6 +18,10 @@ test('Page Fixture Test', async ({ page })=>{
     await username.fill('rahulshettyacademy');
     await page.locator('#signInBtn').click();
     await expect(page).toHaveURL('https://rahulshettyacademy.com/angularpractice/shop')
+    console.log(await page.locator('.card-body a').first().textContent())
+    const productNames = await page.locator('.card-body a');
+    const allNames = await productNames.allTextContents();
+    console.log(allNames)
 });
 
 /* 
