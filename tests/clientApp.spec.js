@@ -44,7 +44,6 @@ test('Child windows handling', async ({ browser })=>{
     const mailId = wholeText.split('@')[1].split(' ')[0];
     console.log(mailId);
     await username.fill(mailId)
-    await page.pause()
 });
 
 /*
