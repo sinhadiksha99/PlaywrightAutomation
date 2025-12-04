@@ -9,12 +9,12 @@ test('Client App', async ({ page })=>{
     console.log(await page.locator('.card-body h5').allTextContents());
 });
 
-test.only('Handling ui elements', async ({ page })=>{
+test('Handling ui elements', async ({ page })=>{
     await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
-    const username = await page.locator('#username');
-    const password = await page.locator('#password');
-    const signIn = await page.locator('#signInBtn');
-    const dropDown = await page.locator('select.form-control');
+    const username = page.locator('#username');
+    const password = page.locator('#password');
+    const signIn = page.locator('#signInBtn');
+    const dropDown = page.locator('select.form-control');
     await dropDown.selectOption('consult');
     await page.locator("input[value='user']").click();
     await page.locator('#okayBtn').click();
@@ -24,7 +24,27 @@ test.only('Handling ui elements', async ({ page })=>{
     await page.locator('#terms').uncheck();
     await expect(page.locator('#terms')).not.toBeChecked();
     await expect(dropDown).toHaveValue('consult');
-    expect(await page.locator('#terms').isChecked()).toBeFalsy()
+    expect(await page.locator('#terms').isChecked()).toBeFalsy();
+    const docText = page.locator("a[href*='documents-request']");
+    await expect(docText).toHaveClass('blinkingText');
+    await expect(docText).toHaveAttribute('class','blinkingText');
+});
+
+test('Child windows handling', async ({ browser })=>{
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
+    const username = page.locator('#username');
+    const docText = page.locator("a[href*='documents-request']");
+    const page1Promise = context.waitForEvent('page');
+    await docText.click(); // it opens a new page 
+    const page1 = await page1Promise;
+    console.log(await page1.locator('.red').textContent());
+    const wholeText = await page1.locator('.red').textContent();
+    const mailId = wholeText.split('@')[1].split(' ')[0];
+    console.log(mailId);
+    await username.fill(mailId)
+    await page.pause()
 });
 
 /*
