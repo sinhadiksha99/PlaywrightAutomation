@@ -1,6 +1,6 @@
 const {test, expect} = require('@playwright/test');
 
-test.only('Client App', async ({ page })=>{
+test('Client App', async ({ page })=>{
     const productName = 'ADIDAS ORIGINAL'
     await page.goto('https://rahulshettyacademy.com/client')
     await page.locator('#userEmail').fill('shutterbug2706@gmail.com')
