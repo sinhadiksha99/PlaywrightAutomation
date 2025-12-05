@@ -1,13 +1,62 @@
 const {test, expect} = require('@playwright/test');
 
-test('Client App', async ({ page })=>{
+test.only('Client App', async ({ page })=>{
+    const productName = 'ADIDAS ORIGINAL'
     await page.goto('https://rahulshettyacademy.com/client')
-    await page.locator('#userEmail').fill('anshika@gmail.com')
-    await page.locator('#userPassword').fill('Iamking@000');
+    await page.locator('#userEmail').fill('shutterbug2706@gmail.com')
+    await page.locator('#userPassword').fill('Diksha@123');
     await page.locator('#login').click();
-    await page.locator('.card-body h5').last().waitFor();
-    console.log(await page.locator('.card-body h5').allTextContents());
+    await page.locator('.card-body b').last().waitFor();
+    console.log(await page.locator('.card-body b').allTextContents());
+    const product = await page.locator('.card-body')
+    const totalProducts = await page.locator('.card-body').count();
+    for(let i =0 ; i<totalProducts ; i++){
+        if(await product.nth(i).locator("b").textContent() === productName){
+            await product.nth(i).locator("text=Add To Cart").click();
+            break;
+        }
+    }
+    await page.locator("[routerlink*='cart']").click();
+    await expect(page.locator("h3:has-text('ADIDAS ORIGINAL')")).toBeVisible({timeout:5000});
+    await page.locator('text=Checkout').click();
+    await page.locator('input[placeholder="Select Country"]').pressSequentially("Ind");
+    const dropdownSection = page.locator(".ta-results");
+    await dropdownSection.waitFor();
+    const options = await dropdownSection.locator("button").count();
+    for(let i =0 ;i<options ;i++){
+        if(await dropdownSection.locator("button").nth(i).textContent() === ' India'){
+            await dropdownSection.locator("button").nth(i).click();
+            break;
+        }
+    }
+    expect(await page.locator('input[placeholder="Select Country"]').inputValue()).toBe("India")
+    expect(await page.locator(".user__name label").textContent()).toBe('shutterbug2706@gmail.com');
+    await page.locator(".user__name .actions a").click();
+    await expect(page.locator('.hero-primary')).toHaveText(" Thankyou for the order. ")
+    const orderId = await page.locator("table tr label.ng-star-inserted").textContent();
+    console.log(orderId);
+    await page.locator(`button[routerlink*="myorders"]`).click();
+    await page.locator(`[scope="row"]`).first().waitFor();
+    const orderIds = await page.locator(`tbody tr`).count();
+    let isOrderPresent = false;
+    for(let i=0; i<orderIds; i++){
+        const orderIdFOrCUrrentRow = await page.locator(`tbody tr`).nth(i).locator('th').textContent();
+        if(orderId.includes(orderIdFOrCUrrentRow)){
+            isOrderPresent = true;
+            await await page.locator(`tbody tr`).nth(i).locator('td button').first().click();
+            break;
+        }
+    }
+    const orderDetailsOrderID = await page.locator('.-main').textContent();
+    const correctOrderID = orderId.includes(orderDetailsOrderID);
+    await expect(correctOrderID).toBeTruthy();
 });
+
+/*await page.locator('input[placeholder="Select Country"]') - here if we type country it will show suggestion 
+ in which we have to click on the country which we want to select, kind of like suggestive dropdown
+ hence will not use fill as we want o put keywords one by one
+*/
+
 
 test('Handling ui elements', async ({ page })=>{
     await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
