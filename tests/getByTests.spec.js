@@ -5,7 +5,7 @@ test('Get BYs', async ({ page })=>{
     await page.getByLabel("Check me out if you Love IceCreams!").click();
     await page.getByLabel("Employed").check();
     await page.getByLabel("Gender").selectOption("Female");
-    await page.getByPlaceholder("Password").fill(""); // getByPlaceholder - when tag has placeholder attribute
+    await page.getByPlaceholder("Password").fill("abc@123"); // getByPlaceholder - when tag has placeholder attribute
     await page.getByRole("button", { name : 'Submit'}).click();
     const isVisible = await page.getByText("Success! The Form has been submitted successfully!.").isVisible();
     await expect(isVisible).toBeTruthy();
