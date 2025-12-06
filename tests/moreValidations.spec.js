@@ -1,6 +1,6 @@
 const {test, expect} = require("@playwright/test")
 
-test.only('More Validation', async({ page })=>{
+test('More Validation', async({ page })=>{
     await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
     await page.getByRole('button', {name :'Hide'}).click();
     await expect(page.getByPlaceholder("Hide/Show Example")).toBeHidden();
