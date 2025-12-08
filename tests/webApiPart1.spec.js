@@ -31,7 +31,7 @@ test.beforeAll(async ()=>{
     console.log(orderId)
 });
 
-test.only("API_1", async({ page })=>{
+test("API_1", async({ page })=>{
     await page.addInitScript(value =>{
         window.localStorage.setItem('token',value)
     },token);
